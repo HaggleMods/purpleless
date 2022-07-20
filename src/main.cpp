@@ -52,6 +52,7 @@ void init()
 		{
 			display_ready = false;
 			can_display = false;
+			resets = 0;
 		}
 	});
 
