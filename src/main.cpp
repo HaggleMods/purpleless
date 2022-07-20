@@ -1,10 +1,15 @@
 #include <sdk/SexySDK.hpp>
 #include <callbacks/callbacks.hpp>
 
+bool display_ready = false;
+bool can_display = false;
+int resets = 0;
+
 void purple_peg_hit()
 {
 	Sexy::Board::Reset();
 	Sexy::SoundMgr::AddSound(Sexy::Assets::get(Sexy::Asset::SOUND_PENALTY));
+	++resets;
 }
 
 void __declspec(naked) purple_peg_hit_hook()
@@ -24,6 +29,48 @@ void __declspec(naked) purple_peg_hit_hook()
 void init()
 {
 	jump(0x0046FD82, purple_peg_hit_hook);
+
+	callbacks::on(callbacks::type::begin_turn_2, []()
+	{
+		display_ready = true;
+		can_display = true;
+	});
+
+	callbacks::on(callbacks::type::finish_options_dialog, []()
+	{
+		if (display_ready) can_display = true;
+	});
+
+	callbacks::on(callbacks::type::do_options_dialog, []()
+	{
+		if (display_ready) can_display = false;
+	});
+
+	callbacks::on(callbacks::type::do_to_menu, []()
+	{
+		if (display_ready)
+		{
+			display_ready = false;
+			can_display = false;
+		}
+	});
+
+	callbacks::on(callbacks::type::main_loop, []()
+	{
+		if (display_ready && can_display)
+		{
+			Sexy::FloatingText_* reset_counter = (Sexy::FloatingText_*)Sexy::LogicMgr::AddStandardText(
+				Sexy::Format("Resets: %i", resets),
+				110.0f,
+				25.0f,
+				14
+			);
+
+			reset_counter->unk_1 = 1;
+			reset_counter->float_offset_start = 0.0f;
+			reset_counter->color = 0xE33D3D;
+		}
+	});
 }
 
 DWORD WINAPI OnAttachImpl(LPVOID lpParameter)
