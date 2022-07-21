@@ -41,6 +41,11 @@ void init()
 		if (display_ready) can_display = true;
 	});
 
+	callbacks::on(callbacks::type::do_level_done, []()
+	{
+		if (display_ready) can_display = false;
+	});
+
 	callbacks::on(callbacks::type::do_options_dialog, []()
 	{
 		if (display_ready) can_display = false;
