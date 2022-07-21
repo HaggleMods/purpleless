@@ -68,17 +68,20 @@ workspace "purpleless"
 		dependson {
 			"MinHook",
 			"Haggle",
+			"ini_rw",
 		}
 
 		links {
 			"MinHook",
 			"Haggle",
+			"ini_rw",
 		}
 
 		includedirs {
 			"../src/",
 			"../deps/minhook/include/",
 			"../deps/haggle/src/haggle/",
+			"../deps/ini_rw/src/",
 		}
 
 		files {
@@ -134,4 +137,16 @@ workspace "purpleless"
 
 		postbuildcommands {
 			"copy /y \"$(TargetPath)\" \"C:\\Program Files (x86)\\Steam\\steamapps\\common\\Peggle Deluxe\\mods\\\"",
+		}
+
+	project "ini_rw"
+		language "c"
+		kind "staticlib"
+
+		files {
+			"../deps/ini_rw/src/**",
+		}
+
+		includedirs {
+			"../deps/ini_rw/src/",
 		}

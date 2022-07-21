@@ -4,11 +4,26 @@
 bool display_ready = false;
 bool can_display = false;
 int resets = 0;
+bool hard_reset = false;
+
+bool get_boolean(const char* bool_text)
+{
+	if (!std::strcmp(bool_text, "true")) return true;
+	else return false;
+}
+
 
 void purple_peg_hit()
 {
-	Sexy::Board::Reset();
-	Sexy::SoundMgr::AddSound(Sexy::Assets::get(Sexy::Asset::SOUND_PENALTY));
+	if (hard_reset)
+	{
+		Sexy::ThunderballApp::DoToMenu();
+	}
+	else
+	{
+		Sexy::Board::Reset();
+		Sexy::SoundMgr::AddSound(Sexy::Assets::get(Sexy::Asset::SOUND_PENALTY));
+	}
 	++resets;
 }
 
@@ -77,6 +92,31 @@ void init()
 			reset_counter->color = 0xE33D3D;
 		}
 	});
+
+
+	ini_t* ini;
+
+	//This runs before the mod loader switches the directory back, maybe look into a mod init import function eventually for haggle
+	if (!std::filesystem::exists("mods/purpleless.ini"))
+	{
+		//Check again because the file path changes
+		if (!std::filesystem::exists("mods/purpleless.ini"))
+		{
+			std::printf("%s\n", std::filesystem::current_path().string().c_str());
+			const char* ini_default = ""
+				"[settings]\n"
+				"hard-reset = false";
+
+			ini = ini_create(ini_default, strlen(ini_default));
+			ini_save(ini, "mods/purpleless.ini");
+		}
+	}
+	else if (std::filesystem::exists("mods/purpleless.ini"))
+	{
+		ini = ini_load("mods/purpleless.ini");
+	}
+
+	hard_reset = get_boolean(ini_get(ini, "settings", "hard-reset"));
 }
 
 DWORD WINAPI OnAttachImpl(LPVOID lpParameter)
