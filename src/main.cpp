@@ -82,8 +82,8 @@ void init()
 		{
 			Sexy::FloatingText_* reset_counter = (Sexy::FloatingText_*)Sexy::LogicMgr::AddStandardText(
 				Sexy::Format("Resets: %i", resets),
-				110.0f,
-				25.0f,
+				510.0f,
+				30.0f,
 				14
 			);
 
