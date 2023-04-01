@@ -1,5 +1,4 @@
 #include <sdk/SexySDK.hpp>
-#include <callbacks/callbacks.hpp>
 
 bool display_ready = false;
 bool can_display = false;
@@ -11,7 +10,6 @@ bool get_boolean(const char* bool_text)
 	if (!std::strcmp(bool_text, "true")) return true;
 	else return false;
 }
-
 
 void purple_peg_hit()
 {
@@ -45,28 +43,28 @@ void init()
 {
 	jump(0x0046FD82, purple_peg_hit_hook);
 
-	callbacks::on(callbacks::type::begin_turn_2, []()
+	Sexy::callbacks::on(Sexy::callbacks::type::begin_turn_2, []()
 	{
 		display_ready = true;
 		can_display = true;
 	});
 
-	callbacks::on(callbacks::type::finish_options_dialog, []()
+	Sexy::callbacks::on(Sexy::callbacks::type::finish_options_dialog, []()
 	{
 		if (display_ready) can_display = true;
 	});
 
-	callbacks::on(callbacks::type::do_level_done, []()
+	Sexy::callbacks::on(Sexy::callbacks::type::do_level_done, []()
 	{
 		if (display_ready) can_display = false;
 	});
 
-	callbacks::on(callbacks::type::do_options_dialog, []()
+	Sexy::callbacks::on(Sexy::callbacks::type::do_options_dialog, []()
 	{
 		if (display_ready) can_display = false;
 	});
 
-	callbacks::on(callbacks::type::do_to_menu, []()
+	Sexy::callbacks::on(Sexy::callbacks::type::do_to_menu, []()
 	{
 		if (display_ready)
 		{
@@ -76,7 +74,7 @@ void init()
 		}
 	});
 
-	callbacks::on(callbacks::type::main_loop, []()
+	Sexy::callbacks::on(Sexy::callbacks::type::main_loop, []()
 	{
 		if (display_ready && can_display)
 		{

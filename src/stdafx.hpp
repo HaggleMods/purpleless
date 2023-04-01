@@ -15,8 +15,6 @@ using namespace std::literals;
 
 //Deps
 #include <MinHook.h>
-#include <sdk/SexySDK.hpp>
-#include <callbacks/callbacks.hpp>
 #include <utils/memory.hpp>
 #include <utils/defs.h>
 #include <ini_rw.h>
